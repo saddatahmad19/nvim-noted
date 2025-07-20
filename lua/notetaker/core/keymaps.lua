@@ -56,6 +56,82 @@ vim.keymap.set("n", "<leader>fg", function()
   require('telescope.builtin').live_grep()
 end, { desc = "Grep in workspace" })
 
+-- Tab Management Keybindings
+vim.keymap.set("n", "<leader>tn", ":tabnew<CR>", { desc = "Open new tab" })
+vim.keymap.set("n", "<leader>t]", ":tabnext<CR>", { desc = "Go to next tab" })
+vim.keymap.set("n", "<leader>t[", ":tabprevious<CR>", { desc = "Go to previous tab" })
+
+-- Tab menu with telescope
+vim.keymap.set("n", "<leader>tm", function()
+  local tabs = {}
+  for i = 1, vim.fn.tabpagenr('$') do
+    local tab_name = vim.fn.tabpagebuflist(i)[vim.fn.tabpagewinnr(i)]
+    local buf_name = vim.fn.bufname(tab_name)
+    local display_name = buf_name ~= "" and vim.fn.fnamemodify(buf_name, ":t") or "[No Name]"
+    table.insert(tabs, { tab = i, name = display_name })
+  end
+  
+  local pickers = require("telescope.pickers")
+  local finders = require("telescope.finders")
+  local conf = require("telescope.config").values
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+  
+  pickers.new({}, {
+    prompt_title = "Select Tab",
+    finder = finders.new_table({
+      results = tabs,
+      entry_maker = function(entry)
+        return {
+          value = entry.tab,
+          display = string.format("%d: %s", entry.tab, entry.name),
+          ordinal = string.format("%d: %s", entry.tab, entry.name),
+        }
+      end,
+    }),
+    sorter = conf.generic_sorter({}),
+    attach_mappings = function(prompt_bufnr, map)
+      actions.select_default:replace(function()
+        actions.close(prompt_bufnr)
+        local selection = action_state.get_selected_entry()
+        vim.cmd("tabn " .. selection.value)
+      end)
+      return true
+    end,
+  }):find()
+end, { desc = "Open tab menu" })
+
+-- Tab selection by number
+vim.keymap.set("n", "<leader>t#", function()
+  local input = vim.fn.input("Tab number: ")
+  local tab_num = tonumber(input)
+  if tab_num then
+    local total_tabs = vim.fn.tabpagenr('$')
+    -- Handle edge cases
+    if tab_num <= 0 then
+      tab_num = 1
+    elseif tab_num > total_tabs then
+      tab_num = total_tabs
+    end
+    vim.cmd("tabn " .. tab_num)
+  end
+end, { desc = "Go to tab by number" })
+
+-- Close current tab
+vim.keymap.set("n", "<leader>tw", ":tabclose<CR>", { desc = "Close current tab" })
+
+-- Close all tabs except current
+vim.keymap.set("n", "<leader>tx", function()
+  local current_tab = vim.fn.tabpagenr()
+  local total_tabs = vim.fn.tabpagenr('$')
+  
+  for i = total_tabs, 1, -1 do
+    if i ~= current_tab then
+      vim.cmd("tabclose " .. i)
+    end
+  end
+end, { desc = "Close all tabs except current" })
+
 -- Treesitter Incremental Selection
 vim.keymap.set("n", "gn", function() vim.cmd('normal! gn') end, { desc = "Start Treesitter selection" })
 vim.keymap.set("n", "grn", function() vim.cmd('normal! grn') end, { desc = "Expand Treesitter node" })
@@ -137,4 +213,13 @@ vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", '"+yy', { desc = "Yank entire line to system clipboard" })
 
 vim.keymap.set("x", "<leader>p", [["_dP]])
+
+-- Treesitter: Open command list via Telescope
+vim.keymap.set("n", "<leader>tt", ":Telescope commands<CR>", { desc = "Open Treesitter Commands via Telescope" })
+
+-- Themify: Open theme picker
+vim.keymap.set("n", "<leader>th", ":Themify<CR>", { desc = "Open Themify Theme Picker" })
+
+-- Telescope: Open main picker
+vim.keymap.set("n", "<leader>tl", ":Telescope<CR>", { desc = "Open Telescope Command Palette" })
 

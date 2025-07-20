@@ -1,3 +1,0 @@
-[submodule "lua/notetaker/notetaker-ui"]
-	path = lua/notetaker/notetaker-ui
-	url = git@github.com:saddatahmad19/notetaker-ui.git

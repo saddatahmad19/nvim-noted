@@ -43,9 +43,9 @@ return {
     -- Short, vertical, essential command list
     local essential_cmds = {
       dashboard.button("ff", "󰱼  Find File", "<cmd>Telescope find_files<CR>"),
-      dashboard.button("ts", "  Treesitter Playground", "<cmd>TSPlaygroundToggle<CR>"),
-      dashboard.button("gR", "  LSP References", "<cmd>Telescope lsp_references<CR>"),
-      dashboard.button("pv", "  File Explorer (NvimTree)", "<cmd>NvimTreeToggle<CR>"),
+      dashboard.button("tt", "  Treesitter Commands (<leader>tt)", "<cmd>Telescope commands<CR>"),
+      dashboard.button("th", "  Pick Theme (Themify) (<leader>th)", "<cmd>Themify<CR>"),
+      dashboard.button("tl", "  Telescope (<leader>tl)", "<cmd>Telescope<CR>"),
       dashboard.button("P", "󰌶  Show <leader>p Menu", function() show_leader_p_popup() end),
     }
 
@@ -87,6 +87,10 @@ return {
 
     -- Disable folding on alpha buffer
     vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
+    
+    -- Hide bufferline when alpha is open
+    vim.cmd([[autocmd FileType alpha set showtabline=0]])
+    
     -- Alpha does not affect tabline; Nougat manages tabline
   end,
 }

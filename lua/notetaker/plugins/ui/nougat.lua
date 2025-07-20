@@ -33,21 +33,21 @@ return {
 
     nougat.set_statusline(stl)
 
-    -- Minimal tabline: tab numbers
-    local tal = Bar("tabline")
-    tal:add_item({
-      content = function()
-        local tabs = {}
-        for i = 1, vim.fn.tabpagenr('$') do
-          if i == vim.fn.tabpagenr() then
-            table.insert(tabs, '[' .. i .. ']')
-          else
-            table.insert(tabs, tostring(i))
-          end
-        end
-        return table.concat(tabs, ' ')
-      end,
-    })
-    nougat.set_tabline(tal)
+    -- Disable tabline since we're using bufferline
+    -- local tal = Bar("tabline")
+    -- tal:add_item({
+    --   content = function()
+    --     local tabs = {}
+    --     for i = 1, vim.fn.tabpagenr('$') do
+    --       if i == vim.fn.tabpagenr() then
+    --         table.insert(tabs, '[' .. i .. ']')
+    --       else
+    --         table.insert(tabs, tostring(i))
+    --       end
+    --     end
+    --     return table.concat(tabs, ' ')
+    --   end,
+    -- })
+    -- nougat.set_tabline(tal)
   end,
 } 
